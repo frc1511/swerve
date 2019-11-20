@@ -9,7 +9,7 @@
 #include <math.h>
 
 // const double kGearRatio = 18.0/68;
-const double kGearRatio = 39;
+const double kGearRatio = 39; //39
 
 /*
  * Used for enclosing a CANTalon speed controller (rotational movement) and a

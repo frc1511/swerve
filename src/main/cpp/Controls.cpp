@@ -7,15 +7,13 @@ Controls::Controls(Drive* drive) {
 }
 
 void Controls::process() {
-    double angle = joystick.GetDirectionDegrees()+180;
+    // double angle = joystick.GetDirectionDegrees();
+    
     // double angle = joystick.GetDirectionDegrees();
 
-    if(timer.Get()*100 > 360) timer.Reset();
-    
-    angle = timer.Get()*100;
+    // drive->module.MoveWheel(.05   , angle);
+    double rotation = joystick.GetRawAxis(3) - joystick.GetRawAxis(2);
+    drive->swerve.move(joystick.GetRawAxis(1), joystick.GetRawAxis(0), rotation);
 
-    drive->module.MoveWheel(.05   , angle);
-    // drive->module.SetAngle(angle);
-    // printf("%d, %f\n", drive->module.GetEncoderVal(), angle);
-    printf("%f\n", angle);
+    // printf("angle = %f\n", angle);
 }

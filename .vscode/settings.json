@@ -23,6 +23,7 @@
     "utility": "cpp",
     "*.tcc": "cpp",
     "functional": "cpp",
-    "future": "cpp"
+    "future": "cpp",
+    "cmath": "cpp"
   }
 }

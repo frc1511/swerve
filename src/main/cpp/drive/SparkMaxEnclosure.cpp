@@ -18,7 +18,7 @@ SparkMaxEnclosure::~SparkMaxEnclosure(){ return; }
 void SparkMaxEnclosure::MoveWheel(double speedVal, double rotationVal)
 {
 	rotationVal = ConvertAngle(rotationVal, GetEncoderVal());
-	printf("rotationVal: %f\n", rotationVal);
+	// printf("rotationVal: %f\n", rotationVal);
 
 	if(ShouldReverse(rotationVal))
 	{
@@ -85,14 +85,14 @@ void SparkMaxEnclosure::SetAngle(double desiredAngle)
 
 	turnMotor.Set(ctre::phoenix::motorcontrol::ControlMode::Position, output);
 
-	printf("desired angle = %f, current = %d\n", output, turnMotor.GetSelectedSensorPosition());
+	// printf("desired angle = %f, current = %d\n", output, turnMotor.GetSelectedSensorPosition());
 }
 
 bool SparkMaxEnclosure::ShouldReverse(double wa)
 {
 	double ea = GetEncoderVal();
 	ea /= kGearRatio;
-	ea = fmod(ea, 1);
+	ea = fmod(ea, 1); 
 
 	//Convert the next wheel angle, which is from -.5 to .5, to 0 to 1
 	if (wa < 0) wa += 1;
@@ -109,6 +109,7 @@ bool SparkMaxEnclosure::ShouldReverse(double wa)
 	else return false;
 }
 
+
 double SparkMaxEnclosure::ConvertAngle(double angle, double encoderValue)
 {
 	//angles are between -.5 and .5
@@ -116,12 +117,13 @@ double SparkMaxEnclosure::ConvertAngle(double angle, double encoderValue)
 	double encPos = encoderValue;
 	encPos /= kGearRatio;
 
-	// printf("encoder angle: %f,\n", encPos);
+	// printf("encoder angle raw: %f, encoder angle mapped: %f, desired angle: %f\n", encoderValue, encPos, angle);
 
 	double temp = angle;
-	// temp += (int)encPos;
+	temp += (int)encPos;
 
 	encPos = fmod(encPos, 1);
+	// printf("encoder angle raw: %f, encoder angle mapped: %f, desired angle: %f, angle-encPos: %f\n", encoderValue, encPos, angle, (angle - encPos));
 
 	if ((angle - encPos) > 0.5) temp -= 1;
 
