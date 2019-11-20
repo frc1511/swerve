@@ -1,0 +1,4 @@
+#pragma once
+
+#define CAN_SWERVE_FRONT_LEFT_TURN 8
+#define CAN_SWERVE_FRONT_LEFT_MOVE 4 //3
