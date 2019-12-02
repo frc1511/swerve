@@ -6,7 +6,7 @@ SparkMaxEnclosure::SparkMaxEnclosure(std::string name, int moveMotorID, int turn
 	this->name = name;
 
 	printf("Spark Max Module Initialized\n");
-	turnMotor.ConfigSelectedFeedbackSensor(FeedbackDevice::CTRE_MagEncoder_Relative);
+	turnMotor.ConfigSelectedFeedbackSensor(FeedbackDevice::QuadEncoder);
 	turnMotor.SetSelectedSensorPosition(0);
 	// turnMotor.
 
@@ -17,6 +17,9 @@ SparkMaxEnclosure::~SparkMaxEnclosure(){ return; }
 
 void SparkMaxEnclosure::MoveWheel(double speedVal, double rotationVal)
 {
+	// printf("moving wheel %s\n", GetName());
+
+
 	rotationVal = ConvertAngle(rotationVal, GetEncoderVal());
 	// printf("rotationVal: %f\n", rotationVal);
 
@@ -32,7 +35,8 @@ void SparkMaxEnclosure::MoveWheel(double speedVal, double rotationVal)
 
 	SetSpeed(speedVal);
 	if(speedVal != 0.0)
-		SetAngle(rotationVal);
+		SetAngle(rotationVal)=;
+
 
 	// printf("moving %f, %f\n", speedVal, rotationVal);
 }

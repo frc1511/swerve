@@ -24,6 +24,7 @@
     "*.tcc": "cpp",
     "functional": "cpp",
     "future": "cpp",
-    "cmath": "cpp"
+    "cmath": "cpp",
+    "string": "cpp"
   }
 }

@@ -8,6 +8,7 @@
 #include "frc/WPILib.h"
 #include "../math/SwerveMath.h"
 #include "SwerveEnclosure.h"
+#include "SparkMaxEnclosure.h"
 
 /*
  * This is used for easily controllig the movement of a robot with a swerve
@@ -38,10 +39,10 @@ public:
 	 * interfaces to be used by this system.
 	 * Requires the width and length between the swerve wheels.
 	 */
-	RobotDriveSwerve(SwerveEnclosure* frontLeftWheel,
-					 SwerveEnclosure* frontRightWheel,
-					 SwerveEnclosure* rearLeftWheel,
-					 SwerveEnclosure* rearRightWheel);
+	RobotDriveSwerve(SparkMaxEnclosure* frontLeftWheel,
+					 SparkMaxEnclosure* frontRightWheel,
+					 SparkMaxEnclosure* rearLeftWheel,
+					 SparkMaxEnclosure* rearRightWheel);
 	virtual ~RobotDriveSwerve() = default;
 
 	/*
@@ -76,11 +77,11 @@ private:
 	SwerveMath mathSystem;
 
 	//Stores the swerve enclosures being used
-	SwerveEnclosure* frontLeftWheel;
-	SwerveEnclosure* frontRightWheel;
-	SwerveEnclosure* rearLeftWheel;
-	SwerveEnclosure* rearRightWheel;
+	SparkMaxEnclosure* frontLeftWheel;
+	SparkMaxEnclosure* frontRightWheel;
+	SparkMaxEnclosure* rearLeftWheel;
+	SparkMaxEnclosure* rearRightWheel;
 
 	//Stores the current mode of the swerve drive
-	DriveMode m_mode = kFieldCentric;
+	DriveMode m_mode = kRobotCentric;
 };

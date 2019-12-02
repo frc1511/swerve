@@ -9,5 +9,5 @@ Drive::Drive(){
 
     // printf("%ld, %ld", moduleDriver, moduleTurn);   
     printf("Constructing drive\n");
-    
+    printf("In drive, memory location of left front module: %d\n", &module0);
 }
