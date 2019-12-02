@@ -8,17 +8,17 @@ SwerveMath::SwerveMath(double m_length, double m_width)
 
 	LENGTH = m_length;
 	WIDTH = m_width;
-	R = sqrt((LENGTH*LENGTH) + (WIDTH*WIDTH));
+	R = sqrt((LENGTH*LENGTH) + (WIDTH*WIDTH));//finding the distance from the center of the robot to each module
 }
 
 double** SwerveMath::Calculate(double x, double y, double z, double angle)
 {
-	if(angle != -999.0)
+	if(angle != -999.0)//if angle a given value, then shift for field centric
 	{
-		angle = angle * PI / 180;
-		double temp = x * cos(angle) + y * sin(angle);
-		y = -x * sin(angle) + y * cos(angle);
-		x = temp;
+		angle = angle * PI / 180;//convert the gyro input from degrees to radians
+		double temp = x * cos(angle) + y * sin(angle);//shift from robot centric x, to a field centric x in a temp var
+		y = -x * sin(angle) + y * cos(angle);//shift from robot centric y, and replace with field centric y
+		x = temp;//take the previously computed x and put it in x
 	}
 
 	double A = y - z*(LENGTH/R);
@@ -38,12 +38,13 @@ double** SwerveMath::Calculate(double x, double y, double z, double angle)
 	double wSpeed4 = sqrt(A*A + C*C);
 	double wAngle4 = atan2(A,C) * 180/PI;
 
-	//normalizes speeds so they're within the ranges of -1 to 1
+	//Find the largest wheel speed(does this need to be absolute largest?)
 	double maxSpeed = wSpeed1;
 	if(wSpeed2 > maxSpeed) maxSpeed = wSpeed2;
 	if(wSpeed3 > maxSpeed) maxSpeed = wSpeed3;
 	if(wSpeed4 > maxSpeed) maxSpeed = wSpeed4;
 
+	//Normalizes speeds so they're within the ranges of -1 to 1, if the maxSpeed is larger than 1
 	if(maxSpeed > 1)
 	{
 		wSpeed1/=maxSpeed;
@@ -52,7 +53,7 @@ double** SwerveMath::Calculate(double x, double y, double z, double angle)
 		wSpeed4/=maxSpeed;
 	}
 
-	//Normalizes angles so they are within -1 to 1
+	//Convert output angles for modules from degrees to revolutions
 	wAngle1 = wAngle1 / 360.0;
 	wAngle2 = wAngle2 / 360.0;
 	wAngle3 = wAngle3 / 360.0;
