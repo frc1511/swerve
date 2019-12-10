@@ -35,5 +35,9 @@ public:
 	 * Outputs value of enclosures encoder as double in units of revolutions
 	 */
 	virtual double GetRotationalPos() = 0;
+	/*
+	 * Outputs value of enclosures encoder in units of ticks
+	 */
+	virtual double GetRawEncoderVal() = 0;
 
 };

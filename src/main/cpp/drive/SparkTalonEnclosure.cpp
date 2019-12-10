@@ -32,9 +32,10 @@ SparkTalonEnclosure::~SparkTalonEnclosure(){ return; }
 
 void SparkTalonEnclosure::MoveWheel(double speedVal, double rotationVal, bool optimize)
 {
+	rotationVal = ConvertAngle(rotationVal, GetRawEncoderVal());
+
 	if(optimize){
 		//currently working without this section
-		// rotationVal = ConvertAngle(rotationVal, GetEncoderVal());
 		// if(ShouldReverse(rotationVal))
 		// {
 		// 	if(rotationVal < 0)
@@ -47,7 +48,7 @@ void SparkTalonEnclosure::MoveWheel(double speedVal, double rotationVal, bool op
 	}
 
 	SetSpeed(speedVal);
-	//removed moment requirement in order to turn, for now.
+	//removed movement requirement in order to turn, for now.
 	SetAngle(rotationVal);
 
 	// printf("moving %f, %f\n", speedVal, rotationVal);
@@ -59,7 +60,29 @@ void SparkTalonEnclosure::StopWheel()
 	turnMotor.StopMotor();
 }
 
+/////////////////////////utility functions
+double SparkTalonEnclosure::ConvertAngle(double targetAngle, double encoderValue)
+{
+	//angles are between -.5 and .5
+	//This is to allow the motors to rotate in continuous circles 
+	double currentAngle = encoderValue/gearRatio;
+	
+	// printf("encoder angle raw: %f, encoder angle mapped: %f, desired angle: %f\n", encoderValue, encPos, angle);
 
+	double temp = targetAngle;
+	temp += (int)currentAngle;
+
+	currentAngle = fmod(currentAngle, 1);
+	// printf("encoder angle raw: %f, encoder angle mapped: %f, desired angle: %f, angle-encPos: %f\n", encoderValue, encPos, angle, (angle - encPos));
+
+	if ((targetAngle - currentAngle) > 0.5){
+		temp -= 1;
+	}else if ((targetAngle - currentAngle) < -0.5){
+		temp += 1;
+	}
+
+	return temp;
+}
 /////////////////////////modifier outputs
 void SparkMaxEnclosure::SetSpeed(double speedVal)
 {
@@ -75,9 +98,13 @@ void SparkTalonEnclosure::SetAngle(double desiredAngle)
 }
 
 //////////////////////////accessor
+double SparkTalonEnclosure::GetRawEncoderVal(){
+	return turnMotor.GetSelectedSensorPosition();
+}
+
 double SparkTalonEnclosure::GetRotationalPos()
 {
-	return turnMotor.GetSelectedSensorPosition()/gearRatio;
+	return this->GetRawEncoderVal()/gearRatio;
 }
 
 std::string SparkTalonEnclosure::GetName()

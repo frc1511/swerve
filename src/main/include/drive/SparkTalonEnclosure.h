@@ -66,6 +66,10 @@ public:
 	 */
 	double GetRotationalPos() override;
 	/*
+	 * Outputs value of enclosures encoder in units of ticks
+	 */
+	double GetRawEncoderVal() override;
+	/*
 	 * Returns the name of the enclosure
 	 */
 	std::string GetName() override;
@@ -102,11 +106,11 @@ private:
 	 * Converts the given angle to a range of -0.5 to 0.5. Remember that one
 	 * rotation of the module is an angle of 1, so the range -0.5 to 0.5 is 
 	 * one full rotation of the module
-	 * @param angle The angle that the module should turn to. In units of revolutions
-	 * @param encoderValue The tik count of the encoders. In units of ticks
+	 * @param targetAngle The angle that the module should turn to. In units of revolutions
+	 * @param encoderValue The tick count of the encoders. In units of ticks
 	 * @return angle that the module should turn to, in a range of -.0.5 to 0.5, in units of revolutions
 	 */
-	// double ConvertAngle(double angle, double encoderValue);
+	double ConvertAngle(double targetAngle, double encoderValue);
 
 	public:
 	rev::CANSparkMax moveMotor;
