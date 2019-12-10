@@ -26,5 +26,6 @@
     "future": "cpp",
     "cmath": "cpp",
     "string": "cpp"
-  }
+  },
+  "svn.ignoreMissingSvnWarning": true
 }

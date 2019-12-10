@@ -6,11 +6,18 @@ SparkMaxEnclosure::SparkMaxEnclosure(std::string name, int moveMotorID, int turn
 	this->name = name;
 
 	printf("Spark Max Module Initialized\n");
-	turnMotor.ConfigSelectedFeedbackSensor(FeedbackDevice::QuadEncoder);
+	turnMotor.ConfigFactoryDefault();
+	
+	turnMotor.ConfigNominalOutputForward(0, 10);
+	turnMotor.ConfigNominalOutputReverse(0, 10);
+	turnMotor.ConfigPeakOutputForward(1, 10);
+	turnMotor.ConfigPeakOutputReverse(-1, 10);
+	turnMotor.ConfigSelectedFeedbackSensor(FeedbackDevice::QuadEncoder,0,10);
 	turnMotor.SetSelectedSensorPosition(0);
-	// turnMotor.
+	turnMotor.ConfigAllowableClosedloopError(0,25,10);
+	
 
-	SetPID(1, 0, 0, .1);
+	SetPID(.1, 0, 0, 0);
 	// SetInverted(MotorType::TurnMotor, false);
 }
 SparkMaxEnclosure::~SparkMaxEnclosure(){ return; }
@@ -23,22 +30,22 @@ void SparkMaxEnclosure::MoveWheel(double speedVal, double rotationVal)
 	rotationVal = ConvertAngle(rotationVal, GetEncoderVal());
 	// printf("rotationVal: %f\n", rotationVal);
 
-	if(ShouldReverse(rotationVal))
-	{
-		if(rotationVal < 0)
-			rotationVal += 0.5;
-		else
-			rotationVal -= 0.5;
+	// if(ShouldReverse(rotationVal))
+	// {
+	// 	if(rotationVal < 0)
+	// 		rotationVal += 0.5;
+	// 	else
+	// 		rotationVal -= 0.5;
 
-		speedVal *= -1;
-	}
+	// 	speedVal *= -1;
+	// }
 
 	SetSpeed(speedVal);
 	if(speedVal != 0.0)
-		SetAngle(rotationVal)=;
+		SetAngle(rotationVal);
 
 
-	// printf("moving %f, %f\n", speedVal, rotationVal);
+	printf("moving %f, %f\n", speedVal, rotationVal);
 }
 
 void SparkMaxEnclosure::StopWheel()
@@ -67,9 +74,9 @@ void SparkMaxEnclosure::SetPID(double P, double I, double D, double F) {//Change
 //Outputs encoder values for the corresponding motor
 int SparkMaxEnclosure::GetEncoderVal()
 {
-	if(reverseEncoder)
-		return -1*turnMotor.GetSelectedSensorPosition();
-	else
+	// if(reverseEncoder)
+	// 	return -1*turnMotor.GetSelectedSensorPosition();
+	// else
 		return turnMotor.GetSelectedSensorPosition();
 }
 
@@ -82,9 +89,9 @@ void SparkMaxEnclosure::SetSpeed(double speedVal)
 void SparkMaxEnclosure::SetAngle(double desiredAngle)
 {
 	double output;
-	if(reverseSteer)
-		output =  -1*desiredAngle*kGearRatio;
-	else
+	// if(reverseSteer)
+	// 	output =  -1*desiredAngle*kGearRatio;
+	// else
 		output = desiredAngle*kGearRatio;
 
 	turnMotor.Set(ctre::phoenix::motorcontrol::ControlMode::Position, output);

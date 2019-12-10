@@ -9,32 +9,36 @@
  * This class handles the calculations required to drive a robot using SwerveDrive
  * wheels.  This class supports both robot centric and field centric modes.  Field
  * centric mode causes the swerve system to always keep the forward/backward and
- * directional movement to stay relative to zero degrees.  Robot centric mode
- * causes the swerve system to act with normal cartesian movement.
+ * directional movement to stay relative to zero degrees of the gyro input via 
+ * angle.  Robot centric mode causes the swerve system to act with normal cartesian
+ * movement with respect to the front of the robot.
  */
 class SwerveMath {
 
 public:
-	/*
-	 * Requires the length and width between swerve wheels in order to have
-	 * be accurate with calculations.
+	/**
+	 * Requires the length and width between swerve wheels in order to be 
+	 * accurate with calculations. The units of distance do not matter as long
+	 * as both length and width are in the same units.
+	 *
+	 * @param length the distance between the front two wheels
+	 * @param width the distance between the front and back wheels
 	 */
 	SwerveMath(double length, double width);
 
-	/*
+	/**
 	 * Uses foward speed, strafing speed, and rotational speed values to calculate
 	 * the required angle and speed for each wheel.  An angle can also be given so
 	 * that field centric mode can be used.  If no angle is given (or equal to -999)
-	 *  robot centric will be used.
+	 * robot centric will be used.
 	 *
-	 * FORWARD: positive value = forward movement, negative value = backward
-	 * movement
-	 * STRAFE: positive value = right direction, negative value = left direction
-	 * ROTATION: positive value = clockwise rotation, negative value =
-	 * counterclockwise rotation
+	 * @param fwd FORWARD: -1 to 1 positive = forward movement, negative value = backward movement
+	 * @param str STRAFE: -1 to 1 positive = right direction, negative value = left direction
+	 * @param rot ROTATION: -1 to 1 positive value = clockwise rotation, negative value = counterclockwise rotation
+	 * @param angle value of a gyro input into the function for field centric
 	 *
-	 * Method outputs an array of speed and rotation value for each wheel.
-	 * 		0					1
+	 * @return array of speed and rotation value for each wheel. Follows this form:
+	 * 		0			1
 	 * 	0	Front Left Speed	Front Left Angle
 	 * 	1	Front Right Speed	Front Right Angle
 	 * 	2	Rear Left Speed		Rear Left Angle
@@ -43,8 +47,8 @@ public:
 	double** Calculate(double fwd, double str, double rot, double angle = -999);
 
 private:
-	static constexpr double NO_ANGLE = -999;
-	static constexpr double PI = acos(-1.0);
+	static constexpr double NO_ANGLE = -999;//Default value for robot centric drive
+	static constexpr double PI = acos(-1.0);//This is the value of PI
 
 	/*
 	 * Copies the speed and angle values into a pointer in order to be used by
@@ -52,6 +56,6 @@ private:
 	 */
 	double** CopyArray(double array[][2]);
 
-	double LENGTH, WIDTH;
-	double R;
+	double LENGTH, WIDTH;//storage of the length and width values
+	double R;//the hypotenuse of width and length
 };
