@@ -84,7 +84,7 @@ double SparkTalonEnclosure::ConvertAngle(double targetAngle, double encoderValue
 	return temp;
 }
 /////////////////////////modifier outputs
-void SparkMaxEnclosure::SetSpeed(double speedVal)
+void SparkTalonEnclosure::SetSpeed(double speedVal)
 {
 	moveMotor.Set(speedVal); 
 }
