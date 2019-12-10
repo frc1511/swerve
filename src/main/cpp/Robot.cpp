@@ -32,13 +32,7 @@ void Robot::OperatorControl() {
   while (IsOperatorControl() && IsEnabled()) {
     
     controls.process(); 
-
-    // printf("%d\n", drive.module.GetEncoderVal());
-
-    // drive.module.SetSpeed(.25);
-
-
-
+    
     // The motors will be updated every 5ms
     frc::Wait(0.005);
   }

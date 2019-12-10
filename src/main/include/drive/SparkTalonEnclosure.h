@@ -2,23 +2,17 @@
 
 #include "frc/WPILib.h"
 #include "drive/SwerveEnclosure.h"
-#include "ctre/phoenix/MotorControl/CAN/TalonSRX.h"
 #include "ctre/Phoenix.h"
+#include "ctre/phoenix/MotorControl/CAN/TalonSRX.h"
 #include "rev/CANSparkMax.h"
 
 #include <math.h>
 
-// The 2019 swerve prototype has a gear 18 teeth on the driving motor output.
-// The 2019 swerve prototype has 68 teeth on the driven/rotating module.
-// The 2019 swerve prototype uses a Vex mag encoder whihc has 1024 ticks per rotation.
-// The constant kGearRatio is in units of encoder ticks per module revolution. I.E. 1024*68/18 for 2019 prototype
-const double kGearRatio = 39; //39
-
-/*
+/**
  * Used for enclosing a CANTalon speed controller (rotational movement) and a
- * speed controller (directional movement) in order to control a single swerve
- * wheel.  The CANTalon speed controller must have an encoder wired to it in
- * order for this enclosure to function.
+ * Spark Max speed controller (directional movement) in order to control a single
+ * swerve module .  The CANTalon speed controller must have an encoder wired to it in
+ * order for this enclosure to function. This intent is for a Mag encoder.
  *
  * This class inherits from the SwerveEnclosure class, used by
  * RobotDriveSwerve objects in order for easy control of the swerve system. This
@@ -27,7 +21,7 @@ const double kGearRatio = 39; //39
  *
  * This enclosure requires CTRE's CANTalon libraries in order to be used.
  */
-class SparkMaxEnclosure : public SwerveEnclosure {
+class SparkTalonEnclosure : public SwerveEnclosure {
 
 public:
 	enum MotorType{
@@ -38,7 +32,7 @@ public:
 	/*
 	 * Requires any speed controller for controlling wheel direction, a CANTalon
 	 * controller to control wheel rotation, and a gear ratio value.  The default
-	 * gear ratio is 1988/1.2.
+	 * gear ratio is 3868.44.
 	 */
 	SparkMaxEnclosure(	std::string name,
 					int moveMotor,
@@ -49,24 +43,16 @@ public:
 	 * Move the wheel to the given speed and rotational values.
 	 * Method is used by RobotDriveSwerve for controlling each individual swerve
 	 * wheel.
-	 * @param speedVal The speed of the moveMotor with input range -1 to 1 for PercentVBus mode 
+	 * @param speedVal The speed of the moveMotor with input range 0 to 1 for PercentVBus mode 
 	 * @param rotationVal The rotational position of the swerve module in units of revolutions of the module
+	 * @param optimize whether or not to limit angles to -0.5 to 0.5 and making a shortcut by reversing the move motors
 	 */
-	void MoveWheel(double speedVal, double rotationVal) override;
+	void MoveWheel(double speedVal, double rotationVal, bool optimize) override;
 	
 	/**
 	 * Stops all movement of an enclosures motors
 	 */
 	void StopWheel() override;
-	
-	/**
-	 * Used to invert a corresponding speed controller, based off of the motor type
-	 * given.  If the value is set to true, the controller is inverted, and if the
-	 * value is set to false. the controller is uninverted. This function does not 
-	 * switch the direction of the motor with respect to the encoder for the module
-	 * turnMotor.
-	 */
-	void SetInverted(MotorType type, bool val);
 	
 	/**
 	 * Sets the PIDF value being used by a swerve enclosure. If all values are
@@ -76,9 +62,9 @@ public:
 	 */
 	void SetPID(double P, double I, double D, double F = 0);
 	/*
-	 * Outputs encoder values for the corresponding motor
+	 * Outputs value of enclosures encoder as double in units of revolutions
 	 */
-	int GetEncoderVal() override;
+	double GetRotationalPos() override;
 	/*
 	 * Returns the name of the enclosure
 	 */
@@ -100,7 +86,7 @@ private:
 	 * it determines if the wheel could be efficient by reversing the rotation
 	 * and movement direction.
 	 */
-	bool ShouldReverse(double desiredPos);
+	// bool ShouldReverse(double desiredPos);
 	/*
 	 * Sets the speed value to the movement motor
 	 */
@@ -120,16 +106,19 @@ private:
 	 * @param encoderValue The tik count of the encoders. In units of ticks
 	 * @return angle that the module should turn to, in a range of -.0.5 to 0.5, in units of revolutions
 	 */
-	double ConvertAngle(double angle, double encoderValue);
+	// double ConvertAngle(double angle, double encoderValue);
 
 	public:
 	rev::CANSparkMax moveMotor;
 	private:
-	WPI_TalonSRX turnMotor;
+	ctre::phoenix::motorcontrol::can::TalonSRX turnMotor;
 
 	std::string name;
-	double gearRatio = 9;//Is this used anywhere?
-	bool reverseEncoder = false;
-	bool reverseSteer = false;
+	// The 2019 swerve prototype has a gear 18 teeth on the driving motor output.
+	// The 2019 swerve prototype has 68 teeth on the driven/rotating module.
+	// The 2019 swerve prototype uses a Vex mag encoder whihc has 1024 ticks per rotation.
+	// The constant kGearRatio is in units of encoder ticks per module revolution. I.E. 1024*68/18 for 2019 prototype 
+	double gearRatio = 3868.44;
+	
 };
 

@@ -25,15 +25,15 @@ public:
 	/*
 	 * Moves wheel at specified speed value and to specified rotational angle
 	 */
-	virtual void MoveWheel(double speedVal, double rotationAngle) = 0;
+	virtual void MoveWheel(double speedVal, double rotationAngle, bool optimize) = 0;
 	/*
 	 * Stops all movement of motors
 	 */
 	virtual void StopWheel() = 0;
 
 	/*
-	 * Outputs value of enclosures encoder as double
+	 * Outputs value of enclosures encoder as double in units of revolutions
 	 */
-	virtual int GetEncoderVal() = 0;
+	virtual double GetRotationalPos() = 0;
 
 };

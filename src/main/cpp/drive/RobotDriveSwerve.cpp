@@ -25,10 +25,10 @@ void RobotDriveSwerve::move(double x, double y, double rotation, double angle)
 		wheelValues = mathSystem.Calculate(x, y, rotation);
 	}
 
-	frontLeftWheel->MoveWheel(	wheelValues[0][0], wheelValues[0][1]);
-	frontRightWheel->MoveWheel(	wheelValues[1][0], wheelValues[1][1]);
-	rearLeftWheel->MoveWheel(	wheelValues[2][0], wheelValues[2][1]);
-	rearRightWheel->MoveWheel(	wheelValues[3][0], wheelValues[3][1]);
+	frontLeftWheel->MoveWheel(	wheelValues[0][0], wheelValues[0][1], true);
+	frontRightWheel->MoveWheel(	wheelValues[1][0], wheelValues[1][1], true);
+	rearLeftWheel->MoveWheel(	wheelValues[2][0], wheelValues[2][1], true);
+	rearRightWheel->MoveWheel(	wheelValues[3][0], wheelValues[3][1], true);
 }
 
 void RobotDriveSwerve::StopMotor()

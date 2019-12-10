@@ -7,13 +7,30 @@ Controls::Controls(Drive* drive) {
 }
 
 void Controls::process() {
-    // double angle = joystick.GetDirectionDegrees();
+    /* We Need a Bring Up process to confirm modules are setup right and our constants are correct */
+
+    /* STEP1: read and confirm, module by module, the encoders are scaled correctly, hand turn */
+    double currentAngle = drive->module0.GetRotationalPos();
+    // double currentAngle = drive->module1.GetRotationalPos();
+    // double currentAngle = drive->module2.GetRotationalPos();
+    // double currentAngle = drive->module3.GetRotationalPos();
+    printf("currentAngle = %f\n", currentAngle);
     
-    // double angle = joystick.GetDirectionDegrees();
+    /* STEP2: confirm PID values are right, start by having a set value, and enabling, then move to joystick */
+    // double angle = .25;
+    // double angle = joystick.GetDirectionDegrees()/360;
+    // drive->module0.MoveWheel( 0.0  , angle, false);
+    // printf("currentAngle = %f targetAngle = %f \n", currentAngle, angle);
 
-    // drive->module.MoveWheel(.05   , angle);
-    double rotation = joystick.GetRawAxis(3) - joystick.GetRawAxis(2);
-    drive->swerve.move(joystick.GetRawAxis(1), joystick.GetRawAxis(0), rotation);
+    /* STEP3: confirm all module will do the same thing */
+    // drive->module1.MoveWheel( 0.0  , angle, false);
+    // drive->module2.MoveWheel( 0.0  , angle, false);
+    // drive->module3.MoveWheel( 0.0  , angle, false);
 
-    // printf("angle = %f\n", angle);
+
+    // double rotation = joystick.GetRawAxis(3) - joystick.GetRawAxis(2);
+    // drive->swerve.move(joystick.GetRawAxis(1), joystick.GetRawAxis(0), rotation);
+    
+    
+    
 }

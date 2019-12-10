@@ -49,7 +49,7 @@ public:
 	 * Requires the input of a forward, directional, and rotation value, along with
 	 * the current angle of a gyro if field centric mode is going to be used
 	 */
-	void move(double forwardMovement, double directionalMovement, double rotationMovement, double angle = -999);
+	void move(double forwardMovement, double directionalMovement, double rotationMovement, double angle = 0.0);
 	
 	/*
 	 * Stops all movement of each SwerveEnclosure

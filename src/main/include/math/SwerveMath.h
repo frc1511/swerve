@@ -44,10 +44,10 @@ public:
 	 * 	2	Rear Left Speed		Rear Left Angle
 	 * 	3	Rear Right Speed	Rear Right Angle
 	 */
-	double** Calculate(double fwd, double str, double rot, double angle = -999);
+	double** Calculate(double fwd, double str, double rot, double angle = 0.0 );
 
 private:
-	static constexpr double NO_ANGLE = -999;//Default value for robot centric drive
+	static constexpr double NO_ANGLE = 0.0;//Default value for robot centric drive
 	static constexpr double PI = acos(-1.0);//This is the value of PI
 
 	/*

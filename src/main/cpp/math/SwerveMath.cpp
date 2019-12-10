@@ -13,7 +13,7 @@ SwerveMath::SwerveMath(double m_length, double m_width)
 
 double** SwerveMath::Calculate(double x, double y, double z, double angle)
 {
-	if(angle != -999.0)//if angle a given value, then shift for field centric
+	if(angle != 0.0)//if angle a given value, then shift for field centric
 	{
 		angle = angle * PI / 180;//convert the gyro input from degrees to radians
 		double temp = x * cos(angle) + y * sin(angle);//shift from robot centric x, to a field centric x in a temp var
