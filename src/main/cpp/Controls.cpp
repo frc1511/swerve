@@ -16,7 +16,8 @@ void Controls::process() {
     // double currentAngle = drive->module3.GetRotationalPos();
     // printf("currentAngle = %f\n", currentAngle);
     
-    /* STEP2: confirm PID values are right, start by having a set value, and enabling, then move to joystick */
+    /* STEP2: confirm PID values are right, start by having a set value, and enabling, then move to joystick 
+            why are we  overshooting and occilating*/
     double angle = -.25;
     // double angle = joystick.GetDirectionDegrees()/360;
     drive->module0.MoveWheel( 0.0  , angle, false);
