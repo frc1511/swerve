@@ -1,6 +1,6 @@
 #pragma once
 
-#include "drive/SparkMaxEnclosure.h"
+#include "drive/SparkTalonEnclosure.h"
 #include "drive/SwerveEnclosure.h"
 #include "Drive/RobotDriveSwerve.h"
 

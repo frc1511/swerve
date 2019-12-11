@@ -14,13 +14,13 @@ void Controls::process() {
     // double currentAngle = drive->module1.GetRotationalPos();
     // double currentAngle = drive->module2.GetRotationalPos();
     // double currentAngle = drive->module3.GetRotationalPos();
-    printf("currentAngle = %f\n", currentAngle);
+    // printf("currentAngle = %f\n", currentAngle);
     
     /* STEP2: confirm PID values are right, start by having a set value, and enabling, then move to joystick */
-    // double angle = .25;
+    double angle = -.25;
     // double angle = joystick.GetDirectionDegrees()/360;
-    // drive->module0.MoveWheel( 0.0  , angle, false);
-    // printf("currentAngle = %f targetAngle = %f \n", currentAngle, angle);
+    drive->module0.MoveWheel( 0.0  , angle, false);
+    printf("currentAngle = %f targetAngle = %f encoderValue = %f\n", currentAngle, angle, drive->module0.GetRawEncoderVal());
 
     /* STEP3: confirm all module will do the same thing */
     // drive->module1.MoveWheel( 0.0  , angle, false);

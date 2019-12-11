@@ -34,10 +34,10 @@ public:
 	 * controller to control wheel rotation, and a gear ratio value.  The default
 	 * gear ratio is 3868.44.
 	 */
-	SparkMaxEnclosure(	std::string name,
+	SparkTalonEnclosure(	std::string name,
 					int moveMotor,
 					int turnMotor);
-	~SparkMaxEnclosure();
+	~SparkTalonEnclosure();
 
 	/**
 	 * Move the wheel to the given speed and rotational values.
@@ -60,7 +60,7 @@ public:
 	 * the modules turn while under proper weight and on the appropriate driving
 	 * surface.
 	 */
-	void SetPID(double P, double I, double D, double F = 0);
+	void SetRotationPID(double P, double I, double D, double F = 0);
 	/*
 	 * Outputs value of enclosures encoder as double in units of revolutions
 	 */
@@ -122,7 +122,7 @@ private:
 	// The 2019 swerve prototype has 68 teeth on the driven/rotating module.
 	// The 2019 swerve prototype uses a Vex mag encoder whihc has 1024 ticks per rotation.
 	// The constant kGearRatio is in units of encoder ticks per module revolution. I.E. 1024*68/18 for 2019 prototype 
-	double gearRatio = 3868.44;
+	double gearRatio = 3868.44*4;//not sure why we are multipling by 4
 	
 };
 

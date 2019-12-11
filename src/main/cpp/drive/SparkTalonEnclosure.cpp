@@ -5,7 +5,9 @@ SparkTalonEnclosure::SparkTalonEnclosure(std::string name, int moveMotorID, int 
 {
 	this->name = name;
 
-	printf("Spark-Talon Module Initialized: "+name+" Move: %f Rotate: %f", moveMotorID, turnMotorID);
+	printf("Spark-Talon Module Initialized: ");
+	std::cout << name;
+	printf("\tMove: %d Rotate: %d \n", moveMotorID, turnMotorID);
 
 	//clean slate on the motor controllers
 	turnMotor.ConfigFactoryDefault(50);
@@ -19,14 +21,16 @@ SparkTalonEnclosure::SparkTalonEnclosure(std::string name, int moveMotorID, int 
 	turnMotor.ConfigPeakOutputReverse(-1, 50);
 	//Adjust for sensor being backwards, it isn't so false
 	this->SetReverseEncoder(false);
-	//switch which rotational direction is positive, we're fin the way it is.
-	this->SetReverseSteerMotor(false);
+	//switch which rotational direction is positive, we're fine the way it is.
+	this->SetReverseSteerMotor(true);
 	//zero the module's rotational encoder, on boot the wheel is at zero degrees
 	turnMotor.SetSelectedSensorPosition(0);
 	//hitting a very specific target can be hard broaden the target by allowing it to be a little off
-	turnMotor.ConfigAllowableClosedloopError(0,gearRatio*3/360,100);
+	turnMotor.ConfigAllowableClosedloopError(0,400,100);
 
-	SetPID(1, 0, 0, .1);
+	turnMotor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
+
+	SetRotationPID(.05, 0, .5, 0);
 }
 SparkTalonEnclosure::~SparkTalonEnclosure(){ return; }
 
@@ -57,12 +61,15 @@ void SparkTalonEnclosure::MoveWheel(double speedVal, double rotationVal, bool op
 void SparkTalonEnclosure::StopWheel()
 {
 	moveMotor.StopMotor();
-	turnMotor.StopMotor();
+	turnMotor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0);
 }
 
 /////////////////////////utility functions
 double SparkTalonEnclosure::ConvertAngle(double targetAngle, double encoderValue)
 {
+
+	//this seems to result in an inverted angle, find out why!!!!!!!!
+
 	//angles are between -.5 and .5
 	//This is to allow the motors to rotate in continuous circles 
 	double currentAngle = encoderValue/gearRatio;
