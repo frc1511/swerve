@@ -26,10 +26,12 @@ SparkTalonEnclosure::SparkTalonEnclosure(std::string name, int moveMotorID, int 
 	//zero the module's rotational encoder, on boot the wheel is at zero degrees
 	turnMotor.SetSelectedSensorPosition(0);
 	//hitting a very specific target can be hard broaden the target by allowing it to be a little off
+	//strykeForce uses 0, not sure if this is what what we think it is
 	turnMotor.ConfigAllowableClosedloopError(0,400,100);
 
 	turnMotor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
 
+	//PID needs to be setup, likely just P and D, strykeForce uses p=10 and D=100, use tuner
 	SetRotationPID(.05, 0, .5, 0);
 }
 SparkTalonEnclosure::~SparkTalonEnclosure(){ return; }
@@ -55,7 +57,7 @@ void SparkTalonEnclosure::MoveWheel(double speedVal, double rotationVal, bool op
 	//removed movement requirement in order to turn, for now.
 	SetAngle(rotationVal);
 
-	// printf("moving %f, %f\n", speedVal, rotationVal);
+	printf("rotationVal sent to SetAngle:%f", rotationVal);
 }
 
 void SparkTalonEnclosure::StopWheel()
@@ -96,12 +98,14 @@ void SparkTalonEnclosure::SetSpeed(double speedVal)
 	moveMotor.Set(speedVal); 
 }
 
-void SparkTalonEnclosure::SetAngle(double desiredAngle)
+void SparkTalonEnclosure::SetAngle(double rotationSetpoint)
 {
-	double output = desiredAngle*gearRatio;
+	//convert units of module revolutions to tick counts
+	double output = rotationSetpoint*gearRatio;
 
+	printf("output sent to Talon:%f", output);
+	//set a setpoint to the motor controller
 	turnMotor.Set(ctre::phoenix::motorcontrol::ControlMode::Position, output);
-
 }
 
 //////////////////////////accessor

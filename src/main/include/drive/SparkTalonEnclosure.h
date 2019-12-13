@@ -91,6 +91,7 @@ private:
 	 * and movement direction.
 	 */
 	// bool ShouldReverse(double desiredPos);
+
 	/*
 	 * Sets the speed value to the movement motor
 	 */
@@ -98,14 +99,15 @@ private:
 	
 	/**
 	 * Sets the that the wheel should turn to using the TalonSRX's internal PID loop.
-	 * @param 
+	 * @param rotationSetpoint the target rotational position in revolutions.
 	 */
-	void SetAngle(double rotationVal);
+	void SetAngle(double rotationSetpoint);
 	
 	/**
 	 * Converts the given angle to a range of -0.5 to 0.5. Remember that one
 	 * rotation of the module is an angle of 1, so the range -0.5 to 0.5 is 
 	 * one full rotation of the module
+	 * 
 	 * @param targetAngle The angle that the module should turn to. In units of revolutions
 	 * @param encoderValue The tick count of the encoders. In units of ticks
 	 * @return angle that the module should turn to, in a range of -.0.5 to 0.5, in units of revolutions
@@ -113,16 +115,21 @@ private:
 	double ConvertAngle(double targetAngle, double encoderValue);
 
 	public:
+	//the SparkMax driven motor that drives the wheel
 	rev::CANSparkMax moveMotor;
 	private:
+	//the TalonSRX driven motor that turns the wheel module
 	ctre::phoenix::motorcontrol::can::TalonSRX turnMotor;
 
+	//name of the module
 	std::string name;
+
 	// The 2019 swerve prototype has a gear 18 teeth on the driving motor output.
 	// The 2019 swerve prototype has 68 teeth on the driven/rotating module.
-	// The 2019 swerve prototype uses a Vex mag encoder whihc has 1024 ticks per rotation.
-	// The constant kGearRatio is in units of encoder ticks per module revolution. I.E. 1024*68/18 for 2019 prototype 
-	double gearRatio = 3868.44*4;//not sure why we are multipling by 4
+	// The 2019 swerve prototype uses a Vex mag encoder which has 4094 ticks per rotation.
+	// # of ticks found: https://phoenix-documentation.readthedocs.io/en/latest/ch16_ClosedLoop.html#primer-on-closed-loop
+	// The constant kGearRatio is in units of encoder ticks per module revolution. I.E. 4096*68/18 for 2019 prototype 
+	double gearRatio = 4096*68/18;
 	
 };
 
