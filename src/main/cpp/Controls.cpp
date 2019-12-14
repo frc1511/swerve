@@ -18,15 +18,17 @@ void Controls::process() {
     
     /* STEP2: confirm PID values are right, start by having a set value, and enabling, then move to joystick 
             why are we  overshooting and occilating*/
-    double angle = -.25;
-    // double angle = joystick.GetDirectionDegrees()/360;
-    drive->module0.MoveWheel( 0.0  , angle, false);
-    printf("currentAngle = %f targetAngle = %f encoderValue = %f\n", currentAngle, angle, drive->module0.GetRawEncoderVal());
+    // if(joystick.GetPOV() != -1) angle = joystick.GetPOV()/360.0;
+    angle = .25;
+    double move = joystick.GetRawAxis(3);
+    // if(joystick.GetMagnitude() > 0.3) angle = joystick.GetDirectionDegrees()/360;
+    drive->module0.MoveWheel( move  , angle, false);
+    printf("requestedAngle = %f encoderValue = %f\n",angle, drive->module0.GetRawEncoderVal());
 
     /* STEP3: confirm all module will do the same thing */
-    // drive->module1.MoveWheel( 0.0  , angle, false);
-    // drive->module2.MoveWheel( 0.0  , angle, false);
-    // drive->module3.MoveWheel( 0.0  , angle, false);
+    // drive->module1.MoveWheel( move  , angle, false);
+    // drive->module2.MoveWheel( move  , angle, false);
+    // drive->module3.MoveWheel( move  , angle, false);
 
 
     // double rotation = joystick.GetRawAxis(3) - joystick.GetRawAxis(2);

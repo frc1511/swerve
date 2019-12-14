@@ -13,4 +13,6 @@ private:
     Drive* drive;
     frc::Timer timer;
 
+    double angle = 0;
+
 };

@@ -10,7 +10,7 @@ SparkTalonEnclosure::SparkTalonEnclosure(std::string name, int moveMotorID, int 
 	printf("\tMove: %d Rotate: %d \n", moveMotorID, turnMotorID);
 
 	//clean slate on the motor controllers
-	turnMotor.ConfigFactoryDefault(50);
+	// turnMotor.ConfigFactoryDefault(50);
 	//we're going to use the MagEncoder
 	turnMotor.ConfigSelectedFeedbackSensor(FeedbackDevice::CTRE_MagEncoder_Relative,0,50);
 	//limit the minimum output power on the rotation modules(0 = no real limits)
@@ -20,25 +20,25 @@ SparkTalonEnclosure::SparkTalonEnclosure(std::string name, int moveMotorID, int 
 	turnMotor.ConfigPeakOutputForward(1, 50);
 	turnMotor.ConfigPeakOutputReverse(-1, 50);
 	//Adjust for sensor being backwards, it isn't so false
-	this->SetReverseEncoder(false);
+	this->SetReverseEncoder(true);
 	//switch which rotational direction is positive, we're fine the way it is.
 	this->SetReverseSteerMotor(true);
 	//zero the module's rotational encoder, on boot the wheel is at zero degrees
 	turnMotor.SetSelectedSensorPosition(0);
 	//hitting a very specific target can be hard broaden the target by allowing it to be a little off
 	//strykeForce uses 0, not sure if this is what what we think it is
-	turnMotor.ConfigAllowableClosedloopError(0,400,100);
+	// turnMotor.ConfigAllowableClosedloopError(0,400,100);
 
-	turnMotor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
+	// turnMotor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
 
 	//PID needs to be setup, likely just P and D, strykeForce uses p=10 and D=100, use tuner
-	SetRotationPID(.05, 0, .5, 0);
+	SetRotationPID(1, 0, 10, 0);
 }
 SparkTalonEnclosure::~SparkTalonEnclosure(){ return; }
 
 void SparkTalonEnclosure::MoveWheel(double speedVal, double rotationVal, bool optimize)
 {
-	rotationVal = ConvertAngle(rotationVal, GetRawEncoderVal());
+	// rotationVal = ConvertAngle(rotationVal, GetRawEncoderVal());
 
 	if(optimize){
 		//currently working without this section
@@ -57,7 +57,7 @@ void SparkTalonEnclosure::MoveWheel(double speedVal, double rotationVal, bool op
 	//removed movement requirement in order to turn, for now.
 	SetAngle(rotationVal);
 
-	printf("rotationVal sent to SetAngle:%f", rotationVal);
+	// printf("rotationVal sent to SetAngle:%f", rotationVal);
 }
 
 void SparkTalonEnclosure::StopWheel()
@@ -70,27 +70,28 @@ void SparkTalonEnclosure::StopWheel()
 double SparkTalonEnclosure::ConvertAngle(double targetAngle, double encoderValue)
 {
 
-	//this seems to result in an inverted angle, find out why!!!!!!!!
+	//this seems to result in an weirdness, find out why!!!!!!!! might have fix it
 
-	//angles are between -.5 and .5
-	//This is to allow the motors to rotate in continuous circles 
+	// convert tick count over to revolutions
 	double currentAngle = encoderValue/gearRatio;
 	
 	// printf("encoder angle raw: %f, encoder angle mapped: %f, desired angle: %f\n", encoderValue, encPos, angle);
 
-	double temp = targetAngle;
-	temp += (int)currentAngle;
+	// double temp = targetAngle;
+	// temp += (int)currentAngle;
 
-	currentAngle = fmod(currentAngle, 1);
+	//find the current angle in the range (-1,1), in revolutions
+	double normalizedCurrentAngle = fmod(currentAngle, 1);
 	// printf("encoder angle raw: %f, encoder angle mapped: %f, desired angle: %f, angle-encPos: %f\n", encoderValue, encPos, angle, (angle - encPos));
 
-	if ((targetAngle - currentAngle) > 0.5){
-		temp -= 1;
-	}else if ((targetAngle - currentAngle) < -0.5){
-		temp += 1;
+	//force current angle in range [-.5,.5]
+	if (normalizedCurrentAngle > 0.5){
+		normalizedCurrentAngle -= 1;
+	}else if (normalizedCurrentAngle < -0.5){
+		normalizedCurrentAngle += 1;
 	}
 
-	return temp;
+	return normalizedCurrentAngle-targetAngle+currentAngle;
 }
 /////////////////////////modifier outputs
 void SparkTalonEnclosure::SetSpeed(double speedVal)
