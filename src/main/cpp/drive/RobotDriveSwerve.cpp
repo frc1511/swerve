@@ -9,8 +9,8 @@ RobotDriveSwerve::RobotDriveSwerve(SparkTalonEnclosure* frontLeftWheel,
 								   mathSystem(kLength, kWidth)
 
 {
-	this->frontLeftWheel = frontLeftWheel;
 	this->frontRightWheel = frontRightWheel;
+	this->frontLeftWheel = frontLeftWheel;
 	this->rearLeftWheel = rearLeftWheel;
 	this->rearRightWheel = rearRightWheel;
 

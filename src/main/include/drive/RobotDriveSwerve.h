@@ -76,8 +76,8 @@ private:
 	SwerveMath mathSystem;
 
 	//Stores the swerve enclosures being used
-	SwerveEnclosure* frontLeftWheel;
 	SwerveEnclosure* frontRightWheel;
+	SwerveEnclosure* frontLeftWheel;
 	SwerveEnclosure* rearLeftWheel;
 	SwerveEnclosure* rearRightWheel;
 

@@ -40,9 +40,9 @@ SparkTalonEnclosure::~SparkTalonEnclosure(){ return; }
 
 void SparkTalonEnclosure::MoveWheel(double speedVal, double rotationVal, bool optimize)
 {
-	// rotationVal = ConvertAngle(rotationVal, GetRawEncoderVal());
 
 	if(optimize){
+		rotationVal = ConvertAngle(rotationVal, GetRawEncoderVal());
 		// currently working without this section
 		// if(ShouldReverse(rotationVal))
 		// {
@@ -79,14 +79,18 @@ double SparkTalonEnclosure::ConvertAngle(double targetAngle, double encoderValue
 	// convert tick count over to revolutions
 	double currentAngle = encoderValue/gearRatio;
 	
-	// printf("encoder angle raw: %f, encoder angle mapped: %f, desired angle: %f\n", encoderValue, encPos, angle);
+	// printf("encoder raw: %f, encoder angle mapped: %f, target: %f, ", encoderValue, currentAngle, targetAngle);
 
 	// double temp = targetAngle;
 	// temp += trunc(currentAngle);
 
 	//find the current angle in the range (-1,1), in revolutions
 	double normalizedCurrentAngle = fmod(currentAngle, 1.0);
-	// printf("encoder angle raw: %f, encoder angle mapped: %f, desired angle: %f, angle-encPos: %f\n", encoderValue, encPos, angle, (angle - encPos));
+	//alternatives if above doesn't work
+	// double normalizedCurrentAngle = currentAngle - trunc(currentAngle);
+	// double excessCurrentAngle = 0.0;
+	// double normalizedCurrentAngle = modf(currentAngle, &excessCurrentAngle);
+	// printf("norm CerAng: %f ", normalizedCurrentAngle);
 
 	//force current angle in range [-.5,.5]
 	if (normalizedCurrentAngle > 0.5){
@@ -94,8 +98,18 @@ double SparkTalonEnclosure::ConvertAngle(double targetAngle, double encoderValue
 	}else if (normalizedCurrentAngle < -0.5){
 		normalizedCurrentAngle += 1;
 	}
+	// printf("norm CerAng Lim: %f\n", normalizedCurrentAngle);
+	double errorAngle = targetAngle - normalizedCurrentAngle;
+	// double distanceToMove = fabs(errorAngle);
 
-	return normalizedCurrentAngle-targetAngle+currentAngle;
+	// if(distanceToMove > .75){
+	// 	//complete the circle shortcut
+		// errorAngle = 1 - errorAngle;
+	// }else if( (distanceToMove <= .75) && (distanceToMove <= .25) ){
+	// 	//invert the motor and angle
+	// }
+
+	return errorAngle+currentAngle;
 }
 
 /////////////////////////modifier outputs
