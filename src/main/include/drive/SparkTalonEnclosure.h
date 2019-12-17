@@ -114,6 +114,9 @@ private:
 	 */
 	double ConvertAngle(double targetAngle, double encoderValue);
 
+	bool ShouldReverse(double wa);
+
+
 	public:
 	//the SparkMax driven motor that drives the wheel
 	rev::CANSparkMax moveMotor;

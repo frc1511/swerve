@@ -13,7 +13,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 Robot::Robot() : drive(), controls(&drive){
- 
+
 }
 
 void Robot::RobotInit() {

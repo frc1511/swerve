@@ -15,7 +15,7 @@ double** SwerveMath::Calculate(double x, double y, double z, double angle)
 {
 	if(angle != 0.0)//if angle a given value, then shift for field centric
 	{
-		angle = angle * PI / 180;//convert the gyro input from degrees to radians
+		angle = angle * PI / 180.0;//convert the gyro input from degrees to radians
 		double temp = x * cos(angle) + y * sin(angle);//shift from robot centric x, to a field centric x in a temp var
 		y = -x * sin(angle) + y * cos(angle);//shift from robot centric y, and replace with field centric y
 		x = temp;//take the previously computed x and put it in x
@@ -27,16 +27,16 @@ double** SwerveMath::Calculate(double x, double y, double z, double angle)
 	double D = x + z*(WIDTH/R);
 
 	double wSpeed1 = sqrt(B*B + C*C);
-	double wAngle1 = atan2(B,C) * 180/PI;
+	double wAngle1 = atan2(B,C) * 180.0/PI;
 
 	double wSpeed2 = sqrt(B*B + D*D);
-	double wAngle2 = atan2(B,D) * 180/PI;
+	double wAngle2 = atan2(B,D) * 180.0/PI;
 
 	double wSpeed3 = sqrt(A*A + D*D);
-	double wAngle3 = atan2(A,D) * 180/PI;
+	double wAngle3 = atan2(A,D) * 180.0/PI;
 
 	double wSpeed4 = sqrt(A*A + C*C);
-	double wAngle4 = atan2(A,C) * 180/PI;
+	double wAngle4 = atan2(A,C) * 180.0/PI;
 
 	//Find the largest wheel speed(does this need to be absolute largest?)
 	double maxSpeed = wSpeed1;

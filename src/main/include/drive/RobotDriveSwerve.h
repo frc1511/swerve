@@ -7,7 +7,7 @@
 
 #include "frc/WPILib.h"
 #include "../math/SwerveMath.h"
-#include "SwerveEnclosure.h"
+#include "drive/SparkTalonEnclosure.h"
 
 /*
  * This is used for easily controllig the movement of a robot with a swerve
@@ -38,10 +38,10 @@ public:
 	 * interfaces to be used by this system.
 	 * Requires the width and length between the swerve wheels.
 	 */
-	RobotDriveSwerve(SwerveEnclosure* frontLeftWheel,
-					 SwerveEnclosure* frontRightWheel,
-					 SwerveEnclosure* rearLeftWheel,
-					 SwerveEnclosure* rearRightWheel);
+	RobotDriveSwerve(SparkTalonEnclosure* frontLeftWheel,
+					 SparkTalonEnclosure* frontRightWheel,
+					 SparkTalonEnclosure* rearLeftWheel,
+					 SparkTalonEnclosure* rearRightWheel);
 	virtual ~RobotDriveSwerve() = default;
 
 	/*

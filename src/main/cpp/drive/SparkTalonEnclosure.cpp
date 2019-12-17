@@ -31,6 +31,8 @@ SparkTalonEnclosure::SparkTalonEnclosure(std::string name, int moveMotorID, int 
 
 	// turnMotor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
 
+	moveMotor.SetInverted(true);
+
 	//PID needs to be setup, likely just P and D, strykeForce uses p=10 and D=100, use tuner
 	SetRotationPID(1, 0, 10, 0);
 }
@@ -41,7 +43,7 @@ void SparkTalonEnclosure::MoveWheel(double speedVal, double rotationVal, bool op
 	// rotationVal = ConvertAngle(rotationVal, GetRawEncoderVal());
 
 	if(optimize){
-		//currently working without this section
+		// currently working without this section
 		// if(ShouldReverse(rotationVal))
 		// {
 		// 	if(rotationVal < 0)
@@ -54,9 +56,11 @@ void SparkTalonEnclosure::MoveWheel(double speedVal, double rotationVal, bool op
 	}
 
 	SetSpeed(speedVal);
-	//removed movement requirement in order to turn, for now.
-	SetAngle(rotationVal);
 
+
+	if(speedVal > .01) {
+		SetAngle(rotationVal);
+	}
 	// printf("rotationVal sent to SetAngle:%f", rotationVal);
 }
 
@@ -78,10 +82,10 @@ double SparkTalonEnclosure::ConvertAngle(double targetAngle, double encoderValue
 	// printf("encoder angle raw: %f, encoder angle mapped: %f, desired angle: %f\n", encoderValue, encPos, angle);
 
 	// double temp = targetAngle;
-	// temp += (int)currentAngle;
+	// temp += trunc(currentAngle);
 
 	//find the current angle in the range (-1,1), in revolutions
-	double normalizedCurrentAngle = fmod(currentAngle, 1);
+	double normalizedCurrentAngle = fmod(currentAngle, 1.0);
 	// printf("encoder angle raw: %f, encoder angle mapped: %f, desired angle: %f, angle-encPos: %f\n", encoderValue, encPos, angle, (angle - encPos));
 
 	//force current angle in range [-.5,.5]
@@ -93,6 +97,7 @@ double SparkTalonEnclosure::ConvertAngle(double targetAngle, double encoderValue
 
 	return normalizedCurrentAngle-targetAngle+currentAngle;
 }
+
 /////////////////////////modifier outputs
 void SparkTalonEnclosure::SetSpeed(double speedVal)
 {
@@ -141,4 +146,26 @@ void SparkTalonEnclosure::SetReverseEncoder(bool reverseEncoder)
 void SparkTalonEnclosure::SetReverseSteerMotor(bool reverseSteer)
 {
 	turnMotor.SetInverted(reverseSteer);
+}
+
+
+bool SparkTalonEnclosure::ShouldReverse(double wa)
+{
+	double ea = GetRawEncoderVal();
+	ea /= gearRatio;
+	ea = fmod(ea, 1.0); 
+
+	//Convert the next wheel angle, which is from -.5 to .5, to 0 to 1
+	if (wa < 0) wa += 1;
+
+	//Find the difference between the two (not sure if the conversion from (-0.5 to 0.5) to (0 to 1) above is needed)
+	//Difference between the two points. May be anything between -1 to 1, but we are looking for a number between -.5 to .5
+	double longDifference = fabs(wa - ea);
+
+	//finds shortest distance (0 to 0.5), always positive though (which is what we want)
+	double difference = fmin(longDifference, 1.0-longDifference);
+
+	//If the sum is greater than 1/4, then return true (aka it is easier for them to turn around and go backwards than go forward)
+	if (difference > 0.25) return true;
+	else return false;
 }

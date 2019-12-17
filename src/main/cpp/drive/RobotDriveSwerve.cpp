@@ -2,13 +2,18 @@
 
 const double kWidth = 14.0;
 const double kLength = 28.0;
-RobotDriveSwerve::RobotDriveSwerve(SwerveEnclosure* frontLeftWheel,
-								   SwerveEnclosure* frontRightWheel,
-								   SwerveEnclosure* rearLeftWheel,
-								   SwerveEnclosure* rearRightWheel):
+RobotDriveSwerve::RobotDriveSwerve(SparkTalonEnclosure* frontLeftWheel,
+								   SparkTalonEnclosure* frontRightWheel,
+								   SparkTalonEnclosure* rearLeftWheel,
+								   SparkTalonEnclosure* rearRightWheel):
 								   mathSystem(kLength, kWidth)
 
 {
+	this->frontLeftWheel = frontLeftWheel;
+	this->frontRightWheel = frontRightWheel;
+	this->rearLeftWheel = rearLeftWheel;
+	this->rearRightWheel = rearRightWheel;
+
 	if(kLength == 0.0 || kWidth == 0.0)
 		throw std::invalid_argument("Swerve drive Width/Length cannot be zero");
 }
@@ -29,6 +34,8 @@ void RobotDriveSwerve::move(double x, double y, double rotation, double angle)
 	frontRightWheel->MoveWheel(	wheelValues[1][0], wheelValues[1][1], true);
 	rearLeftWheel->MoveWheel(	wheelValues[2][0], wheelValues[2][1], true);
 	rearRightWheel->MoveWheel(	wheelValues[3][0], wheelValues[3][1], true);
+
+
 }
 
 void RobotDriveSwerve::StopMotor()
