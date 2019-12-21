@@ -17,7 +17,7 @@ public:
     SparkTalonEnclosure module3{"rear right", CAN_SWERVE_REAR_RIGHT_MOVE, CAN_SWERVE_REAR_RIGHT_TURN};
 
     RobotDriveSwerve swerve{&module0, &module1, &module2, &module3};
-    
+    frc::AnalogGyro gyro{0};
 private:
     
     

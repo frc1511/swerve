@@ -22,31 +22,37 @@ void Controls::process() {
     // angle = .25;
     // double move = joystick.GetRawAxis(3);
     // if(joystick.GetMagnitude() > 0.3) angle = joystick.GetDirectionDegrees()/360;
-    // drive->module0.MoveWheel( move  , angle, false);
-    printf("requestedAngle = %f encoderValue = %f\n",angle, drive->module0.GetRawEncoderVal());
+    // drive->module0.MoveWheel( move  , angle, true);
+    // printf("requestedAngle = %f encoderValue = %f\n",angle, drive->module0.GetRawEncoderVal());
 
     /* STEP3: confirm all module will do the same thing */
     // drive->module1.MoveWheel( move  , angle, false);
     // drive->module2.MoveWheel( move  , angle, false);
     // drive->module3.MoveWheel( move  , angle, false);
 
-    double forwardMovement = joystick.GetRawAxis(1);
-    if(abs(forwardMovement) < .15) {
+    double forwardMovement = 1.0*joystick.GetRawAxis(1);
+    if(abs(forwardMovement) < .05) {
         forwardMovement = 0;
     }
 
-    double directionalMovement = joystick.GetRawAxis(0);
-    if(abs(directionalMovement) < .15) {
+    double directionalMovement = -1.0*joystick.GetRawAxis(0);
+    if(abs(directionalMovement) < .05) {
         directionalMovement = 0;
     }
 
-    double rotation = joystick.GetRawAxis(3) - joystick.GetRawAxis(2);
-
-    if(abs(rotation) < .15) {
+    double rotation = -0.8*(joystick.GetRawAxis(3) - joystick.GetRawAxis(2));
+    if(abs(rotation) < .05) {
         rotation = 0;
     }
-    drive->swerve.move(forwardMovement, directionalMovement, rotation);
-    
-    
-    
+    printf("gyro angle = %f\n", drive->gyro.GetAngle());
+    if(joystick.GetRawButton(8) == true){
+        drive->module0.MoveWheel( 0.02 , 0.0, false);
+        drive->module1.MoveWheel( 0.02 , 0.0, false);
+        drive->module2.MoveWheel( 0.02 , 0.0, false);
+        drive->module3.MoveWheel( 0.02 , 0.0, false);
+    }else{
+        drive->swerve.move(forwardMovement, directionalMovement, rotation, drive->gyro.GetAngle());
+    }
+    // drive->swerve.move(forwardMovement, 0, 0);    
+
 }

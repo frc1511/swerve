@@ -43,20 +43,13 @@ void SparkTalonEnclosure::MoveWheel(double speedVal, double rotationVal, bool op
 
 	if(optimize){
 		rotationVal = ConvertAngle(rotationVal, GetRawEncoderVal());
-		// currently working without this section
-		// if(ShouldReverse(rotationVal))
-		// {
-		// 	if(rotationVal < 0)
-		// 		rotationVal += 0.5;
-		// 	else
-		// 		rotationVal -= 0.5;
-
-		// 	speedVal *= -1;
-		// }
 	}
 
-	SetSpeed(speedVal);
-
+	if(IsMoveMotorReversed){
+		SetSpeed(-1.0*speedVal);
+	}else{
+		SetSpeed(speedVal);
+	}
 
 	if(speedVal > .01) {
 		SetAngle(rotationVal);
@@ -74,12 +67,17 @@ void SparkTalonEnclosure::StopWheel()
 double SparkTalonEnclosure::ConvertAngle(double targetAngle, double encoderValue)
 {
 
-	//this seems to result in an weirdness, find out why!!!!!!!! might have fix it
-
+	if(IsMoveMotorReversed){
+		if(targetAngle > 0.0){
+			targetAngle = targetAngle - 0.5;
+		}else{
+			targetAngle = 0.5 + targetAngle;
+		}
+	}
 	// convert tick count over to revolutions
 	double currentAngle = encoderValue/gearRatio;
 	
-	// printf("encoder raw: %f, encoder angle mapped: %f, target: %f, ", encoderValue, currentAngle, targetAngle);
+	// printf("encoder raw: %f, encoder angle: %f, target: %f, ", encoderValue, currentAngle, targetAngle);
 
 	// double temp = targetAngle;
 	// temp += trunc(currentAngle);
@@ -98,17 +96,27 @@ double SparkTalonEnclosure::ConvertAngle(double targetAngle, double encoderValue
 	}else if (normalizedCurrentAngle < -0.5){
 		normalizedCurrentAngle += 1;
 	}
-	// printf("norm CerAng Lim: %f\n", normalizedCurrentAngle);
+	// printf("norm CerAng Lim: %f, ", normalizedCurrentAngle);
 	double errorAngle = targetAngle - normalizedCurrentAngle;
-	// double distanceToMove = fabs(errorAngle);
+	double distanceToMove = fabs(errorAngle);
 
-	// if(distanceToMove > .75){
-	// 	//complete the circle shortcut
-		// errorAngle = 1 - errorAngle;
-	// }else if( (distanceToMove <= .75) && (distanceToMove <= .25) ){
-	// 	//invert the motor and angle
-	// }
+	// printf("errAngle1: %f, ", errorAngle);
+	if(distanceToMove > .75){
+		//complete the circle shortcut
+		errorAngle = 1 - errorAngle;
+	}else if( (distanceToMove <= .75) && (distanceToMove >= .25) ){
+		//invert the motor and angle
+		IsMoveMotorReversed = !IsMoveMotorReversed;
+		// moveMotor.SetInverted(!moveMotor.GetInverted());
+		if(targetAngle > 0.0){
+			targetAngle = targetAngle - 0.5;
+		}else{
+			targetAngle = 0.5 + targetAngle;
+		}
+		double errorAngle = targetAngle - normalizedCurrentAngle;
+	}
 
+	// printf("errAngle: %f\n", errorAngle);
 	return errorAngle+currentAngle;
 }
 
@@ -123,7 +131,7 @@ void SparkTalonEnclosure::SetAngle(double rotationSetpoint)
 	//convert units of module revolutions to tick counts
 	double output = rotationSetpoint*gearRatio;
 
-	printf("output sent to Talon:%f", output);
+	// printf("output sent to Talon:%f", output);
 	//set a setpoint to the motor controller
 	turnMotor.Set(ctre::phoenix::motorcontrol::ControlMode::Position, output);
 }
@@ -170,7 +178,7 @@ bool SparkTalonEnclosure::ShouldReverse(double wa)
 	ea = fmod(ea, 1.0); 
 
 	//Convert the next wheel angle, which is from -.5 to .5, to 0 to 1
-	if (wa < 0) wa += 1;
+	if (wa < 0) wa += .5;
 
 	//Find the difference between the two (not sure if the conversion from (-0.5 to 0.5) to (0 to 1) above is needed)
 	//Difference between the two points. May be anything between -1 to 1, but we are looking for a number between -.5 to .5

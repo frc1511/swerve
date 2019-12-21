@@ -133,6 +133,6 @@ private:
 	// # of ticks found: https://phoenix-documentation.readthedocs.io/en/latest/ch16_ClosedLoop.html#primer-on-closed-loop
 	// The constant kGearRatio is in units of encoder ticks per module revolution. I.E. 4096*68/18 for 2019 prototype 
 	double gearRatio = 4096*68/18;
-	
+	bool IsMoveMotorReversed = false;
 };
 

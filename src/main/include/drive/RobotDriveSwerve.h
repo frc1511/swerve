@@ -71,6 +71,11 @@ public:
 	 */
 	void ToggleMode();
 
+	/**
+	 * 	Sets max speed module will drive forward at
+	 */
+	void setSpeedLimiter(double limiter);
+
 private:
 	//Stores the calculated values used by each wheel of the swerve drive
 	SwerveMath mathSystem;
@@ -83,4 +88,6 @@ private:
 
 	//Stores the current mode of the swerve drive
 	DriveMode m_mode = kFieldCentric;
+
+	double speedLimiter;
 };

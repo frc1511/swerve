@@ -8,6 +8,11 @@ Drive::Drive(){
     // // moduleTurn = std::make_shared<WPI_TalonSRX>(7);
 
     // printf("%ld, %ld", moduleDriver, moduleTurn);   
+
+    swerve.setSpeedLimiter(.35);
+
+    gyro.Reset();
+
     printf("Constructing drive\n");
     
 }

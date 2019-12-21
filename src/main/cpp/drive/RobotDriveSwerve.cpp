@@ -30,12 +30,19 @@ void RobotDriveSwerve::move(double x, double y, double rotation, double angle)
 		wheelValues = mathSystem.Calculate(x, y, rotation);
 	}
 
-	frontLeftWheel->MoveWheel(	wheelValues[0][0], wheelValues[0][1], true);
-	frontRightWheel->MoveWheel(	wheelValues[1][0], wheelValues[1][1], true);
-	rearLeftWheel->MoveWheel(	wheelValues[2][0], wheelValues[2][1], true);
-	rearRightWheel->MoveWheel(	wheelValues[3][0], wheelValues[3][1], true);
+	frontLeftWheel->MoveWheel(	speedLimiter*wheelValues[0][0], wheelValues[0][1], true);
+	frontRightWheel->MoveWheel(	speedLimiter*wheelValues[1][0], wheelValues[1][1], true);
+	rearLeftWheel->MoveWheel(	speedLimiter*wheelValues[2][0], wheelValues[2][1], true);
+	rearRightWheel->MoveWheel(	speedLimiter*wheelValues[3][0], wheelValues[3][1], true);
 
 
+}
+
+void RobotDriveSwerve::setSpeedLimiter(double limiter)
+{
+	if(0.1 < limiter && limiter < 1){
+		speedLimiter = limiter;
+	}
 }
 
 void RobotDriveSwerve::StopMotor()
